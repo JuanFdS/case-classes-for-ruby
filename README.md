@@ -1,0 +1,1 @@
+# case-classes-for-ruby
