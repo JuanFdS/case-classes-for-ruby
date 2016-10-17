@@ -35,10 +35,6 @@ module CaseClass
   end
 
   module InstanceBehaviour
-    def class_parameters
-      self.class.class_parameters
-    end
-
     def initialize(*values_as_varargs, **values_as_hash)
       initializing_parameters = initializing_parameters(*values_as_varargs, **values_as_hash)
 
@@ -68,12 +64,34 @@ module CaseClass
     end
 
     def copy(new_values = {})
-      instantiating_values = class_parameters.zip(values).to_h.merge(new_values)
+      instantiating_values = parameters_with_values.to_h.merge(new_values)
 
       self.class.new(instantiating_values)
     end
 
+    def to_s
+      class_name = self.class.name
+
+      show_pair_parameter_value = -> (parameter, value) { "#{parameter}: #{value}"}
+
+      parameters_and_values = parameters_with_values.map(&show_pair_parameter_value).join(', ')
+
+      "#{class_name}(#{parameters_and_values})"
+    end
+
+    def inspect
+      to_s
+    end
+
     private
+
+    def class_parameters
+      self.class.class_parameters
+    end
+
+    def parameters_with_values
+      class_parameters.zip(values)
+    end
 
     def initializing_parameters(*values_as_varargs, **values_as_hash)
       values_as_varargs.empty? ? initializing_parameters_as_hash(**values_as_hash)

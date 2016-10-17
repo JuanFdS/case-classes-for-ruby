@@ -46,6 +46,10 @@ describe CaseClass do
 
       expect(a_point).to eq(Point(1, 1))
     end
+
+    it 'has a readable conversion to string' do
+      expect(Point(1, 1).to_s).to eq 'Point(x: 1, y: 1)'
+    end
   end
 
   context 'Two instantiated objects' do
