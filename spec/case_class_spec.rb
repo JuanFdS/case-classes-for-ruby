@@ -39,9 +39,14 @@ describe CaseClass do
 
   context 'Two instantiated objects' do
     context 'of the same case class' do
+      context 'with different values' do
+        it 'should have different hashes' do
+          expect(Point(1, 1).hash).not_to eq(Point(1, 2).hash)
+        end
+      end
       context 'with the same values' do
-        let(:point_a) { point_class.new(x: 1,y: 1) }
-        let(:point_b) { point_class.new(x: 1,y: 1) }
+        let(:point_a) { Point(x: 1, y: 1) }
+        let(:point_b) { Point(x: 1, y: 1) }
 
         it 'are the same' do
           expect(point_a).to be point_b
@@ -59,6 +64,15 @@ describe CaseClass do
           a_hash = { point_a => 5}
           expect(a_hash[point_b]).to eq 5
         end
+      end
+    end
+    context 'of different classes' do
+      class Rectangle
+        case_class with: [:x, :y]
+      end
+
+      it 'should have a different hashes' do
+        expect(Rectangle(1, 1).hash).not_to eq (Point(1, 1).hash)
       end
     end
   end

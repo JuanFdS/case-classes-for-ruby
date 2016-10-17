@@ -79,7 +79,7 @@ module CaseClass
     end
 
     def hash
-      values.hash
+      [self.class, values].hash
     end
   end
 end
