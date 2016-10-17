@@ -47,21 +47,6 @@ module CaseClass
       self.freeze
     end
 
-    def initializing_parameters(*values_as_varargs, **values_as_hash)
-      values_as_varargs.empty? ? initializing_parameters_as_hash(**values_as_hash)
-                               : initializing_parameters_as_varargs(*values_as_varargs)
-    end
-
-    def initializing_parameters_as_varargs(*values_as_varargs)
-      raise ArgumentError unless values_as_varargs.size == class_parameters.size
-      class_parameters.zip(values_as_varargs)
-    end
-
-    def initializing_parameters_as_hash(**values_as_hash)
-      raise ArgumentError unless values_as_hash.keys.sort == class_parameters.sort
-      values_as_hash
-    end
-
     def equal?(obj)
       [self.class, self.values] == [obj.class, obj.values]
     end
@@ -75,7 +60,7 @@ module CaseClass
     end
 
     def values
-      class_parameters.map { |parameter| instance_variable_get "@#{parameter}" }
+      class_parameters.map { |parameter| send parameter }
     end
 
     def hash
@@ -86,6 +71,23 @@ module CaseClass
       instantiating_values = class_parameters.zip(values).to_h.merge(new_values)
 
       self.class.new(instantiating_values)
+    end
+
+    private
+
+    def initializing_parameters(*values_as_varargs, **values_as_hash)
+      values_as_varargs.empty? ? initializing_parameters_as_hash(**values_as_hash)
+                               : initializing_parameters_as_varargs(*values_as_varargs)
+    end
+
+    def initializing_parameters_as_varargs(*values_as_varargs)
+      raise ArgumentError unless values_as_varargs.size == class_parameters.size
+      class_parameters.zip(values_as_varargs)
+    end
+
+    def initializing_parameters_as_hash(**values_as_hash)
+      raise ArgumentError unless values_as_hash.keys.sort == class_parameters.sort
+      values_as_hash
     end
   end
 end
