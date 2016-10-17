@@ -35,6 +35,17 @@ describe CaseClass do
       expect(point.x).to be 1
       expect(point.y).to be 10
     end
+
+    it 'can be used to get a new value' do
+      expect(Point(x: 1, y: 1).copy(x: 2)).to eq(Point(x: 2, y: 1))
+    end
+
+    it 'is not modified when you use it to get a new value' do
+      a_point = Point(1, 1)
+      a_point.copy(y: 3)
+
+      expect(a_point).to eq(Point(1, 1))
+    end
   end
 
   context 'Two instantiated objects' do

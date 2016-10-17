@@ -81,5 +81,11 @@ module CaseClass
     def hash
       [self.class, values].hash
     end
+
+    def copy(new_values = {})
+      instantiating_values = class_parameters.zip(values).to_h.merge(new_values)
+
+      self.class.new(instantiating_values)
+    end
   end
 end
